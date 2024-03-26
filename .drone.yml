@@ -2,6 +2,11 @@ kind: pipeline
 name: docker-build
 type: docker
 
+environment:
+  ENV CGO_ENABLED: 0
+  ENV GOOS: linux
+  ENV GOARCH: loong64
+
 steps:
   - name: build
     image: loongcr.lcpu.dev/lcpu/archlinux:base
@@ -14,7 +19,7 @@ steps:
       DOCKER_HOST: unix:///run/user/1001/docker.sock
     commands:
     - pacman -Sy --noconfirm && pacman -S --noconfirm docker go
-    - CGO_ENABLED=0 GOOS=linux GOARCH=loong64 go build -a -tags netgo -o release/linux/loong64/drone-s3
+    - go get -u &&  go mod tidy && go build -a -o release/linux/loong64/drone-s3
     - docker build -t loongcr.lcpu.dev/drone/s3:latest -f ./docker/Dockerfile.linux.loong64 .
     - docker login -u="\$app" -p="$DOCKER_PASSWORD" loongcr.lcpu.dev
     - docker push loongcr.lcpu.dev/drone/s3:latest
