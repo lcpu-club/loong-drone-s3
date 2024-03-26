@@ -1,4 +1,4 @@
-FROM scratch
+FROM loongcr.lcpu.dev/lcpu/archlinux:base
 
-ADD release/linux/amd64/drone-s3 /bin/
-ENTRYPOINT ["/bin/drone-s3"]
+ADD release/linux/loong64/drone-s3 /usr/bin/
+ENTRYPOINT ["/usr/bin/drone-s3"]
